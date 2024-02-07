@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AlexandriА Utena Avatar
 // @namespace    https://shark.vincy.ru/
-// @version      1.0.2
+// @version      1.0.3
 // @description  Правильная аватарка.
 // @author       Shark_vil
 // @updateURL    https://github.com/Shark-vil/advance-empire-utena-avatar/raw/master/advance-empire-utena-avatar.user.js
@@ -136,15 +136,18 @@ window.addEventListener('scroll', async function() {
 }, false);
 */
 
+async function runProcessAsync() {
+    try {
+        await parseAvatarsAsync();
+        await sleepAsync(yieldTimeMs);
+    } catch (err) {
+        console.warn(err);
+    }
+    await sleepAsync(yieldTimeMs);
+}
+
 window.addEventListener('load', async function() {
     while (true) {
-        //if (isScrolled || isFirstLaunch) await parseAvatarsAsync();
-        //if (isFirstLaunch) isFirstLaunch = false;
-        try {
-            await parseAvatarsAsync();
-            await sleepAsync(yieldTimeMs);
-        } catch (err) {
-            console.warn(err);
-        }
+        await runProcessAsync();
     }
 }, false);
