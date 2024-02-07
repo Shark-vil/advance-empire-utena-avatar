@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AlexandriА Utena Avatar
 // @namespace    https://shark.vincy.ru/
-// @version      2024-02-06
+// @version      1.0.1
 // @description  Правильная аватарка.
 // @author       Shark_vil
 // @match        https://vk.com/im
@@ -138,7 +138,11 @@ window.addEventListener('load', async function() {
     while (true) {
         //if (isScrolled || isFirstLaunch) await parseAvatarsAsync();
         //if (isFirstLaunch) isFirstLaunch = false;
-        await parseAvatarsAsync();
-        await sleepAsync(yieldTimeMs);
+        try {
+            await parseAvatarsAsync();
+            await sleepAsync(yieldTimeMs);
+        } catch (err) {
+            console.warn(err);
+        }
     }
 }, false);
