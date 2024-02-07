@@ -4,12 +4,12 @@
 // @version      2024-02-06
 // @description  Правильная аватарка.
 // @author       Shark_vil
-// @match        *://*.vk.com/im
-// @match        *://*.vk.com/im?*
-// @match        *://*.vk.com/im/*
-// @match        *://*.vk.com/groups
-// @match        *://*.vk.com/advance_empire
-// @match        *://*.vk.com/advance_empire/*
+// @match        https://vk.com/im
+// @match        https://vk.com/im?*
+// @match        https://vk.com/im/*
+// @match        https://vk.com/groups
+// @match        https://vk.com/advance_empire
+// @match        https://vk.com/advance_empire/*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // ==/UserScript==
