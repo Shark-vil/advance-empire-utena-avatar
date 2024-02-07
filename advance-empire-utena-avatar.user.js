@@ -4,6 +4,8 @@
 // @version      1.0.1
 // @description  Правильная аватарка.
 // @author       Shark_vil
+// @updateURL    https://github.com/Shark-vil/advance-empire-utena-avatar/raw/master/advance-empire-utena-avatar.user.js
+// @downloadURL  https://github.com/Shark-vil/advance-empire-utena-avatar/raw/master/advance-empire-utena-avatar.user.js
 // @match        https://vk.com/im
 // @match        https://vk.com/im?*
 // @match        https://vk.com/im/*
