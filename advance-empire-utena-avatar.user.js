@@ -1,153 +1,88 @@
 // ==UserScript==
 // @name         AlexandriА Utena Avatar
 // @namespace    https://shark.vincy.ru/
-// @version      1.0.3
+// @version      2.0.0
 // @description  Правильная аватарка.
 // @author       Shark_vil
 // @updateURL    https://github.com/Shark-vil/advance-empire-utena-avatar/raw/master/advance-empire-utena-avatar.user.js
 // @downloadURL  https://github.com/Shark-vil/advance-empire-utena-avatar/raw/master/advance-empire-utena-avatar.user.js
-// @match        https://vk.com/im
-// @match        https://vk.com/im?*
-// @match        https://vk.com/im/*
-// @match        https://vk.com/groups
-// @match        https://vk.com/advance_empire
-// @match        https://vk.com/advance_empire/*
+// @match        *://*.vk.com/im*
+// @match        *://*.vk.com/groups
+// @match        *://*.vk.com/advance_empire*
 // @icon         data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
 // @grant        none
 // ==/UserScript==
 
+const regexReplace = /background-image\:.+url\(\'(.+)\?/;
 const rightAvatar = "https://i.ibb.co/JptVWP1/alexandria.png";
-let groupAvatarHasReplacment = false;
-let groupAvatarHasReplacmentDialogPreview = false;
-//let isFirstLaunch = true;
-//let isScrolled = false;
-//let scrolledTimer = undefined;
-let yieldTimeMs = 10;
+const pictures = [
+    'https://sun1-16.userapi.com/s/v1/ig2/KWGkGCM9BdZ7yLKqHBTOSIxCkAfJJZyczwUhXuj-APTyIZTVFfSP6_Y3b6gKY0xxeQGW0jJu1yglT4cBn-6qxrYD.jpg',
+    'https://sun1-16.userapi.com/s/v1/ig2/bW5TpYYu6HfZ1J-uZ06vByxuxKjbXMKtnRhG_QDUYLQY0tCR0dFdwdgO_DdAmusfogBa1AicgoTTTK88ZienrkB3.jpg',
+    'https://sun1-16.userapi.com/impg/irwOFePCQt6s27yViJDvO00Bvp-ieUq63iarqQ/dX15e3ESvSo.jpg',
+    'https://sun1-16.userapi.com/s/v1/if2/uYLaiIi62sNnrADHmvHct6uaxwIF_ki2TmLfp9Ld_dxDvd7JG_v7HXzoH0RwSYz1G8sbhDlPdNj-stuqllAA1khO.jpg'
+];
 
-const sleepAsync = ms => {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-function imageIsChanged(imageElement) {
-    if (imageElement === undefined || imageElement.src === rightAvatar) return true;
-    return false;
-}
-
-function setImageNewAvatar(imageElement) {
-    if (imageIsChanged(imageElement)) return;
-    imageElement.src = rightAvatar;
-}
-
-async function replaceGroupAvatarAsync() {
-    const avatarElements = document.getElementsByClassName("AvatarRich__img");
-    if (avatarElements !== undefined && avatarElements.length != 0) {
-        for (const avatar of avatarElements) {
-            if (avatar._rightAvatarHasChecked !== undefined && avatar._rightAvatarHasChecked == true) {
-                await sleepAsync(yieldTimeMs);
-                continue;
+function imgFunc(img, index, collection)
+{
+    if (img._isReplacementAvatar == undefined && img.src != rightAvatar)
+    {
+        //console.log('[AAUA] check image - ' + img);
+        for (const picture of pictures) {
+            if (img.src.indexOf(picture) == 0) {
+                console.log('[AAUA] Replace image - ' + picture);
+                img._isReplacementAvatar = true;
+                img.src = rightAvatar;
+                break;
             }
-            avatar._rightAvatarHasChecked = true;
-            if (avatar.getAttribute('alt') == 'AlexandriА (Аниме новости)') {
-                setImageNewAvatar(avatar);
-            }
-            await sleepAsync(yieldTimeMs);
         }
     }
 }
 
-async function replaceGroupListAvatarAsync() {
-    const elements = document.getElementsByClassName("group_row_photo");
-    if (elements !== undefined && elements.length != 0) {
-        for (const element of elements) {
-            if (element._rightAvatarHasChecked !== undefined && element._rightAvatarHasChecked == true) {
-                await sleepAsync(yieldTimeMs);
-                continue;
+function owAvasFunc(divBlock, index, collection) {
+    if (divBlock._isReplacementAvatar == undefined)
+    {
+        //console.log('[AAUA] Check image div - ' + divBlock);
+        const styleValue = divBlock.getAttribute('style');
+        if (styleValue == undefined) return;
+        const matchValues = styleValue.match(regexReplace);
+        if (matchValues != undefined && matchValues.length > 1) {
+            const styleUrlValue = matchValues[1];
+            for (const picture of pictures) {
+                if (picture == styleUrlValue) {
+                    console.log('[AAUA] Replace image style - ' + picture);
+                    divBlock._isReplacementAvatar = true;
+                    divBlock.setAttribute('style', styleValue.replace(picture, rightAvatar));
+                    break;
+                }
             }
-            element._rightAvatarHasChecked = true;
-            const elementLink = element.querySelector('a');
-            if (elementLink === undefined || elementLink.getAttribute('href').indexOf('/advance_empire') != 0) {
-                continue;
-            }
-            const avatar = elementLink.querySelector('img');
-            if (avatar === undefined) {
-                continue;
-            }
-            setImageNewAvatar(avatar);
-            await sleepAsync(yieldTimeMs);
         }
     }
 }
 
-async function replaceMessageAvatarAsync() {
-    const dialogElements = document.getElementsByClassName("_im_header_link");
-    if (dialogElements !== undefined && dialogElements.length != 0) {
-        for (const dialogElement of dialogElements) {
-            if (dialogElement._rightAvatarHasChecked !== undefined && dialogElement._rightAvatarHasChecked == true) {
-                await sleepAsync(yieldTimeMs);
-                continue;
-            }
-            dialogElement._rightAvatarHasChecked = true;
-            if (dialogElement.getAttribute('href') == '/advance_empire') {
-                const avatar = dialogElement.querySelector('img');
-                setImageNewAvatar(avatar);
-            }
-            await sleepAsync(yieldTimeMs);
-        }
-    }
+function updateImageSources()
+{
+    const allImages = document.querySelectorAll('img');
+    allImages.forEach(imgFunc);
 
-    const imageContainerElements = document.querySelectorAll(".im_grid,.post_image_stories");
-    if (imageContainerElements !== undefined && imageContainerElements.length != 0) {
-        for (const imageContainer of imageContainerElements) {
-            if (imageContainer._rightAvatarHasChecked !== undefined && imageContainer._rightAvatarHasChecked == true) {
-                await sleepAsync(yieldTimeMs);
-                continue;
-            }
+    const owAvas = document.querySelectorAll('.ow_ava,.Avatar__image');
+    owAvas.forEach(owAvasFunc);
+}
 
-            const imageElement = imageContainer.querySelector('img');
-            if (imageElement === undefined) {
-                continue;
-            }
-
-            if (imageElement.getAttribute('alt') == 'AlexandriА (Аниме новости)') {
-                setImageNewAvatar(imageElement);
-            } else {
-                imageContainer._rightAvatarHasChecked = true;
-            }
-            await sleepAsync(yieldTimeMs);
-        }
+function callbackFunc(mutationsList, observer)
+{
+    console.log('[AAUA] Listen images created');
+    for (const mutation of mutationsList)
+    {
+        if (mutation.type == 'childList') updateImageSources();
     }
 }
 
-async function parseAvatarsAsync() {
-    const url = window.location.href;
-    if (url.indexOf('https://vk.com/advance_empire') == 0 || url.indexOf('https://vk.com/groups') == 0) {
-        if (url.indexOf('https://vk.com/groups') == 0) await replaceGroupListAvatarAsync();
-        await replaceGroupAvatarAsync();
-    } else if (url.indexOf('https://vk.com/im') == 0) {
-        await replaceMessageAvatarAsync();
-    }
+function onWindowLoaded(evt)
+{
+    console.log('[AAUA] Init - AlexandriА Utena Avatar');
+    const targetNode = document.body;
+    const config = {attributes:true, childList:true, subtree: true};
+    const observer = new MutationObserver(callbackFunc);
+    observer.observe(targetNode, config);
 }
-
-/*
-window.addEventListener('scroll', async function() {
-    if (scrolledTimer !== undefined) clearTimeout(scrolledTimer);
-    scrolledTimer = setTimeout(() => { isScrolled = false }, 1000);
-    isScrolled = true;
-}, false);
-*/
-
-async function runProcessAsync() {
-    try {
-        await parseAvatarsAsync();
-        await sleepAsync(yieldTimeMs);
-    } catch (err) {
-        console.warn(err);
-    }
-    await sleepAsync(yieldTimeMs);
-}
-
-window.addEventListener('load', async function() {
-    while (true) {
-        await runProcessAsync();
-    }
-}, false);
+window.addEventListener('load', onWindowLoaded, false);
