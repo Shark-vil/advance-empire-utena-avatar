@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AlexandriА Utena Avatar
 // @namespace    https://shark.vincy.ru/
-// @version      2.0.0
+// @version      2024-02-11
 // @description  Правильная аватарка.
 // @author       Shark_vil
 // @updateURL    https://github.com/Shark-vil/advance-empire-utena-avatar/raw/master/advance-empire-utena-avatar.user.js
