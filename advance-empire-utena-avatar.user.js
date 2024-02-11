@@ -116,4 +116,13 @@ function onWindowLoaded(evt) {
     const observer = new MutationObserver(callbackFunc);
     observer.observe(targetNode, config);
 }
-window.addEventListener('load', onWindowLoaded, false);
+
+window.addEventListener('load', function () {
+    setInterval(() => {
+        try {
+            parseAvatarsAsync();
+        } catch (err) {
+            console.warn(err);
+        }
+    }, 1000);
+}, false);
